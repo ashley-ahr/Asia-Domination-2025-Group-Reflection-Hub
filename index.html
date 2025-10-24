@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Asia Domination 2025 – Group Recap Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ashley: {
+              orange: '#F68C2C',
+              orangeDark: '#e17610',
+            }
+          },
+          boxShadow: {
+            soft: '0 6px 24px rgba(0,0,0,0.08)'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Subtle scrollbar */
+    ::-webkit-scrollbar{height:10px;width:10px}
+    ::-webkit-scrollbar-thumb{background:#d8d8d8;border-radius:8px}
+    ::-webkit-scrollbar-thumb:hover{background:#bfbfbf}
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-neutral-900 to-neutral-800 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+        <div class="flex items-center gap-3"><img src="./asset/logo.png" alt="Ashley Asia HR" class="h-10 w-auto"/><div><h1 class="text-2xl md:text-3xl font-bold tracking-tight">Asia Domination 2025</h1><p class="opacity-90">Transforming for the Future — Group Reflection Hub</p></div></div>
+        <div class="flex items-center gap-2 flex-wrap">
+          <button id="btnExportCSV" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition shadow-soft">⬇ Export CSV</button>
+          <button id="btnPrint" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition shadow-soft">🖨 Print</button>
+          <button id="btnToggleView" class="px-4 py-2 rounded-xl bg-ashley-orange text-white hover:bg-ashley-orangeDark transition shadow-soft">🔁 Toggle Cards/Table</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Controls -->
+  <section class="bg-white border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div class="md:col-span-2">
+          <label class="text-sm font-medium text-gray-600">Search</label>
+          <input id="searchInput" type="text" placeholder="Search by group, focus, problems, outcomes…" class="w-full mt-1 rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ashley-orange" />
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-600">Functional Department</label>
+          <select id="deptFilter" class="w-full mt-1 rounded-xl border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-ashley-orange">
+            <option value="">All departments</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-600">Quick Filter</label>
+          <div class="flex flex-wrap gap-2 mt-1">
+            <button data-q="automation" class="quick px-3 py-2 text-sm rounded-xl border hover:bg-gray-50">Automation</button>
+            <button data-q="forecast" class="quick px-3 py-2 text-sm rounded-xl border hover:bg-gray-50">Forecast</button>
+            <button data-q="design" class="quick px-3 py-2 text-sm rounded-xl border hover:bg-gray-50">Design</button>
+            <button data-q="hr" class="quick px-3 py-2 text-sm rounded-xl border hover:bg-gray-50">HR</button>
+            <button data-q="quality" class="quick px-3 py-2 text-sm rounded-xl border hover:bg-gray-50">Quality</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Cards view -->
+    <div id="cardView" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+    <!-- Table view -->
+    <div id="tableView" class="hidden overflow-auto rounded-xl border bg-white shadow-soft">
+      <table class="min-w-full text-sm">
+        <thead class="bg-ashley-orange text-white">
+          <tr>
+			<th class="text-left px-4 py-3 min-w-[80px]">Group</th>
+            <th class="text-left px-4 py-3">Functional Departments</th>
+            <th class="text-left px-4 py-3">Project Focus / AI Solution</th>
+            <th class="text-left px-4 py-3">Problem / Opportunity</th>
+            <th class="text-left px-4 py-3">Expected Outcomes</th>
+            <th class="text-left px-4 py-3">Recap</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full shadow-soft">
+      <div class="flex items-start justify-between p-5 border-b">
+        <h3 id="modalTitle" class="text-xl font-semibold text-ashley-orange"></h3>
+        <button id="modalClose" class="text-gray-500 hover:text-gray-700">✕</button>
+      </div>
+      <div class="p-5 space-y-4">
+        <div>
+          <div class="text-xs uppercase text-blue-700 font-semibold">Functional Departments</div>
+          <div id="modalDept" class="font-medium"></div>
+        </div>
+        <div>
+          <div class="text-xs uppercase text-blue-700 font-semibold">Project Focus / AI Solution</div>
+          <div id="modalFocus" class=""></div>
+        </div>
+        <div>
+          <div class="text-xs uppercase text-blue-700 font-semibold">Problem / Opportunity</div>
+          <div id="modalProblem" class=""></div>
+        </div>
+        <div>
+          <div class="text-xs uppercase text-blue-700 font-semibold">Expected Outcomes</div>
+          <div id="modalOutcome" class=""></div>
+        </div>
+      </div>
+      <div class="p-5 border-t flex items-center justify-between gap-3">
+        <a id="modalLink" href="#" target="_blank" class="px-4 py-2 rounded-xl bg-ashley-orange text-white hover:bg-ashley-orangeDark">Open full HTML recap</a>
+        
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // === DATA (embedded) ===
+    const DATA = [
+      {group:"Group 1",dept:"Production / Manufacturing Operations",focus:"Automating packaging tape application and optimizing packaging-area layout.",problem:"Manual packaging processes (4 workers per line), inconsistent quality, inefficient layout.",outcome:"Reduce labor from 4 to 0 per line; improve packaging quality and appearance; save ~VND 40M/month per line (~USD 48K/year for 2 lines)."},
+      {group:"Group 2",dept:"Information Technology (IT) + HR + Strategy Execution",focus:"AI opportunity discovery — process automation (product launch tracking, e-commerce listing), real-time translation, IT performance analysis. Main focus: Process Automation & Real-time Visibility.",problem:"Repetitive manual workflows; limited multi-language collaboration; lack of real-time performance insights.",outcome:"Pilot AI automation for launch/e-commerce workflows, test real-time translation for APAC, improve transparency and system efficiency."},
+      {group:"Group 3",dept:"Information Technology (Infrastructure, Security, Delivery)",focus:"AI-driven Expense Approval Automation – auto-classify, approve/escalate, forecast budgets.",problem:"Manual Excel/email approvals; inconsistent approval logic; lack of cost benchmark and forecasting.",outcome:"Reduce operational cost by 20%, increase productivity by 5%, achieve ≤5% defect rate,"},
+      {group:"Group 4",dept:"Supply Chain Operations & Planning",focus:"AI Opportunities for Supply Chain & Operations – intelligent allocation, automated reporting, vendor performance dashboards, and factory communication automation",problem:"Manual and fragmented data handling; time-consuming reporting; complex inventory allocation and vendor management.",outcome:"Faster decision-making, real-time visibility, reduced manual work, improved forecasting and communication efficiency."},
+      {group:"Group 5",dept:"Finance & Accounting + Engineering",focus:"AI Application in Compliance & Three-Way Matching – automate compliance documentation and invoice / PO / GRN matching",problem:"Heavy manual checks for compliance and document verification; risk of human error; time delays.",outcome:"Higher accuracy, reduced audit workload, faster matching and reporting cycles, improved compliance readiness."},
+      {group:"Group 6",dept:"Sales, Customer Service, Warehouse & Supply Chain",focus:"AI-Driven Forecasting in Supply Chain Operations – demand planning automation using ML (Prophet, LightGBM) and RPA",problem:"Manual forecasting; disconnected data; delayed planning cycles.",outcome:"Improved forecast accuracy, faster decision-making, reduced manual data entry, and continuous model learning."},
+      {group:"Group 7",dept:"EHS + Customs + Legal + Corporate Services",focus:"AI & IT Integration for Customs Automation – automated documentation, error detection, and master-data validation",problem:"Manual customs validation; lack of standardization; risk of compliance errors.",outcome:"End-to-end automation, real-time error detection, elimination of manual checks, faster customs clearance."},
+      {group:"Group 8",dept:"Global Supply Chain Planning, Forecasting & Logistics",focus:"Real-Time Visibility & AI-Driven Customer Insights – predictive analytics for demand / retail forecasting and customer engagement",problem:"Limited visibility of retail data; weak customer insight; lack of predictive forecasting.",outcome:"Up to 90 % demand-forecast accuracy; faster customer response; improved satisfaction and digital engagement."},
+      {group:"Group 9",dept:"HR & Administration + Supply Chain + Engineering",focus:"AI-Driven International Product Design – generative AI for product visualization, customization, and forecast-based design",problem:"Slow manual design cycles; limited customization for regional preferences.",outcome:"Rapid product rendering, AR/3D visualization, enhanced B2B presentation and marketing efficiency."},
+      {group:"Group 10",dept:"Product Development & Sourcing (Procurement)",focus:"AI Strategy & Opportunities in E-commerce, Logistics & Workflow Automation – dynamic carrier selection, generative AI for design, decision support in finance & reporting",problem:"Fragmented workflows across logistics, design, and finance; manual reporting; slow decisions.",outcome:"Streamlined end-to-end process, faster design and logistics decisions, better cost efficiency, improved cross-team visibility."},
+      {group:"Group 11",dept:"Product Development, Procurement, Quality",focus:"AI for Warehouse & Operations Efficiency – automation of QC reporting, material flow (FIFO), transport scheduling, and investment evaluation",problem:"Heavy manual work in QC reporting and logistics tracking; scattered data for decision-making; inefficiencies in transportation scheduling.",outcome:"Automated reporting and QC tracking; predictive analytics for logistics; enhanced warehouse performance and planning accuracy."},
+      {group:"Group 12",dept:"Product Engineering, Testing, Procurement",focus:"AI-Driven Daily Work Automation – intelligent task prioritization, automated email summarization, and scheduling assistants",problem:"Overload of repetitive communication tasks; difficulty managing emails and prioritizing daily workloads; manual report consolidation.",outcome:"AI assistants to automate task sorting and scheduling; faster vendor evaluation; streamlined decision-making; consistent document automation."},
+      {group:"Group 13",dept:"Strategic Sourcing, Procurement, CI",focus:"AI for Process Intelligence & Sourcing Automation – AI-enabled analysis of procurement efficiency and vendor data",problem:"Manual vendor research, price tracking, and sourcing assessment across multiple markets; lack of integrated analytics.",outcome:"Centralized sourcing dashboard; predictive vendor insights; automation of procurement workflows; reduced turnaround time."},
+      {group:"Group 14",dept:"Product Development, Engineering, Procurement",focus:"AI for Cross-Functional Process Automation & Collaboration – unified workflow and data synchronization for sourcing, quality, and engineering",problem:"Fragmented workflow between departments; redundant manual data entry; difficulty identifying automation opportunities.",outcome:"Consistent workflow standards; automated rule-based reviews; improved cross-team coordination; reduced manual bottlenecks."},
+      {group:"Group 15",dept:"Procurement, Purchasing, Commodity Analysis",focus:"Automation & AI in Operations – smart reporting, vendor evaluation, and commodity price prediction",problem:"Time-consuming manual reports, limited insight into global material trends, inconsistent vendor evaluation methods.",outcome:"Time-saving AI reporting (from 1 day to minutes); improved price intelligence; data-driven vendor management; better sourcing agility."},
+      {group:"Group 17",dept:"Human Resources (HR) & Administration",focus:"AI + HR Automation Opportunity Discovery – document summarization, recruitment automation, multilingual translation, and onboarding digitization",problem:"Repetitive HR admin work, manual candidate screening, heavy paperwork, slow onboarding processes.",outcome:"Faster document generation, multilingual communication, streamlined HR operations, improved employee experience."},
+      {group:"Group 18",dept:"HR + PE + Facilities & Engineering",focus:"AI Automation for HR Excellence – meeting-minutes automation, employee chatbots, HR data analytics, and workflow integration",problem:"Manual note-taking, disconnected HR processes, slow data retrieval, fragmented employee self-service.",outcome:"Automated summaries, integrated HR systems, real-time analytics, improved service delivery and data-driven decision-making."},
+      {group:"Group 19",dept:"Product Design & Engineering (R&D / Industrial Engineering / CI)",focus:"AI Application in Product Design – AI-assisted 3D modeling, prototype generation, and design automation up to 70 %",problem:"Long manual design cycles, repetitive modeling work, limited data-driven creativity.",outcome:"70 % faster product development, full AI-driven workflow for new products, reduced lead time, consistent design quality."},
+      {group:"Group 20",dept:"Quality Control (QC) & Manufacturing",focus:"AI Opportunities in Quality & Manufacturing – AI vision for defect detection, predictive analytics, automated reporting, and vendor evaluation",problem:"Time-consuming manual inspection and data entry, human errors, limited process insight.",outcome:"Real-time defect detection, predictive quality control, automated reporting, data-driven improvement initiatives."},
+      {group:"Group 21",dept:"Finance + Production + PIC",focus:"AI & Automation for Document, Manufacturing, Training & Market Analysis – AI summarization, input control systems, digital training, market forecasting",problem:"Inefficient document review, manual production control, training gaps, unpredictable market demand.",outcome:"Faster compliance review, automated input monitoring, video training modules, AI-based demand forecasting for production planning."},
+      {group:"Group 22",dept:"FEFV – (Production, QA, Supply Chain, HR, Finance, Sales)",focus:"AI Project for Production Optimization (AGV Implementation) – automated guided vehicle system for material handling",problem:"Manual transport of finished goods, bottlenecks in cutting line and warehouse flow.",outcome:"Labor reduction, smoother workflow, cost savings through AGV pilot deployment and process automation."},
+    ];
+
+    // SharePoint links map
+    const LINKS = {"Group 1":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/Edqo9IYq-T9NlCis7HxhYXQBzc1YGBeYLy4Movpaml4jkg?e=BfzwqQ","Group 2":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/EY0kUmCsXD1HkpgVyAoZGGEBMEa8HActpep9Ko4suUOpyw","Group 3":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/EX7sJggJ-kBPsdhj0SSYikgBzn7QTIP_9WGKN84ft0RuOQ?e=9SmJDv","Group 4":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/EU5F-BtDMW9Oua1OLw-OMOYBXeoDKh-syf_qEHc55pY7pg","Group 5":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/EZVKfhK0sIpKtHARfMhzd-gBq7JOyOvsyqLZLc-2JQ4elQ?e=yI5fHZ","Group 6":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/EQvNG2e1G8tAqIWiEESY5ScBbjN1fU6zg2LRCrfRBu9vfw?e=PUo5kb","Group 7":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/EWfD7luBYXNMiva3QB60ydcBA54HyNG3zfrdtsZ0LOAGbw?e=WkXE52","Group 8":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/EeN3mCeVi9xIvhnXz2YkgJMBE8YbTCtdTHNmVrbiiiI0aw","Group 9":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/EQyqZM2rExpEgP8w7QslZ0QBWHLsObexmnomoe-RJc0gqQ?e=Q94FRx","Group 10":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/ETdh9zP6MNpNr3JvYFGnpl4BE1YAGwU1iVvPG8wf_px5zg?e=soMw5t","Group 11":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/EYPQGzxH4NVMpDpNDhQtTPgB1wu_55Z4mShwloEwNWhYJA?e=IRli4P","Group 12":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/EWdlYZIgXmJNiOiBl6nntxgB-XJBtU15MAKs44LgeeGQyw?e=qmjd3c","Group 13":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/EYV_IYSlmhdPonJCjbIHw_cBWlhwNIx4ITtF6CEhB_bl0g?e=FDelqP","Group 14":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/EZsFXvT7duVAko9zAEw0q_oBHBPnPX2H8a0C38v8WQ2XwQ?e=uPQeH3","Group 15":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/EdRJt61q6EhPs6MU1iE2aNEBpEePelgRETUW5smQMNuuZw?e=ytCdba","Group 17":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/EXTz903JGsZIkekfjNc5cOABeec4PMtwkPuyXipMzpW3fQ?e=YKku9V","Group 18":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/Ebzt3PIusWtGk1n0obOJYN8BjxnGLR-REBwl6fDB9gU50g?e=YnRt3o","Group 19":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/EZY2ymaCSHdEgBq9kCWikqABwKJFMnyoI01P7Bt3ZkbjyA?e=7D2BdD","Group 20":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/EZaefHcVnNVDuMBhj3xH_TMBil9toZedGYFmIAKvVv_IBg?e=SNb612","Group 21":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/EbRVWRo2LKZPjtP0vMbPtDYBmSyBln3bZBgiXmMEAcm5Uw?e=sFg6BB","Group 22":"https://masterashley-my.sharepoint.com/:u:/g/personal/anguyen_ashleyfurniture_com/EQkxGFRUZyFFtzeeZTJjd-8BGdUcfC0Hlb9xOgycIL-D6A?e=RmB1y0"};
+    const linkFor = (g) => LINKS[g] || recapLinkFor(g);
+
+    // Build filename from group label (assumes you host files as `Group X.html` in same folder)
+    const recapLinkFor = (group) => `${group.replace(/\s+/g,'_')}.html`;
+
+    const state = { view: 'cards', q: '', dept: '' };
+
+    const el = (sel) => document.querySelector(sel);
+    const els = (sel) => Array.from(document.querySelectorAll(sel));
+
+    function uniqueDepts(){
+      const s = new Set(DATA.map(r=>r.dept));
+      return Array.from(s).sort();
+    }
+
+    function filterData(){
+      const q = state.q.toLowerCase().trim();
+      return DATA.filter(r => {
+        const hitDept = !state.dept || r.dept === state.dept;
+        if(!q) return hitDept;
+        const blob = `${r.group} ${r.dept} ${r.focus} ${r.problem} ${r.outcome}`.toLowerCase();
+        return hitDept && blob.includes(q);
+      });
+    }
+
+    function renderCards(){
+      const list = filterData();
+      const wrap = el('#cardView');
+      wrap.innerHTML = '';
+      list.forEach(row => {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-2xl border shadow-soft p-5 flex flex-col';
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              
+              <h3 class="text-lg font-semibold text-ashley-orange">${row.group}</h3>
+            </div>
+            <a class="text-sm px-3 py-1 rounded-full bg-ashley-orange text-white hover:bg-ashley-orangeDark" href="${linkFor(row.group)}" target="_blank">View Recap</a>
+          </div>
+          <div class="mt-4">
+            <div class="text-xs uppercase text-blue-700 font-semibold">Functional Departments</div>
+            <div class="font-medium">${row.dept}</div>
+          </div>
+          <div class="mt-3">
+            <div class="text-xs uppercase text-blue-700 font-semibold">Focus</div>
+            <div>${row.focus}</div>
+          </div>
+          <div class="mt-3 text-sm text-gray-700 line-clamp-3">
+            <span class="text-blue-700 font-semibold uppercase text-2xs">Problems</span> — ${row.problem}
+          </div>
+          <div class="mt-2 text-sm text-gray-700 line-clamp-3">
+            <span class="text-blue-700 font-semibold uppercase text-2xs">Outcomes</span> — ${row.outcome}
+          </div>
+          <div class="mt-4 flex items-center gap-2">
+            <button class="px-3 py-2 rounded-xl border hover:bg-gray-50" data-open="${row.group}">Details</button>
+            
+          </div>
+        `;
+        wrap.appendChild(card);
+      });
+    }
+
+    function renderTable(){
+      const list = filterData();
+      const tbody = el('#tableBody');
+      tbody.innerHTML = '';
+      list.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b last:border-b-0';
+        tr.innerHTML = `
+          <td class="align-top px-4 py-3 font-medium text-ashley-orange">${row.group}</td>
+          <td class="align-top px-4 py-3">${row.dept}</td>
+          <td class="align-top px-4 py-3">${row.focus}</td>
+          <td class="align-top px-4 py-3">${row.problem}</td>
+          <td class="align-top px-4 py-3">${row.outcome}</td>
+          <td class="align-top px-4 py-3"><a class="text-ashley-orange hover:underline" target="_blank" href="${linkFor(row.group)}">Open</a></td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function populateDeptFilter(){
+      const sel = el('#deptFilter');
+      uniqueDepts().forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d; opt.textContent = d; sel.appendChild(opt);
+      });
+    }
+
+    function openModal(group){
+      const row = DATA.find(r => r.group === group);
+      if(!row) return;
+      el('#modalTitle').textContent = `${row.group}`;
+      el('#modalDept').textContent = row.dept;
+      el('#modalFocus').textContent = row.focus;
+      el('#modalProblem').textContent = row.problem;
+      el('#modalOutcome').textContent = row.outcome;
+      el('#modalLink').href = linkFor(row.group);
+      el('#modal').classList.remove('hidden');
+      el('#modal').classList.add('flex');
+    }
+
+    
+    function exportCSV(){
+      const list = filterData();
+      const header = ['Group','Functional Departments','Project Focus / AI Solution','Problem / Opportunity','Expected Outcomes'];
+      const rows = list.map(r=>[r.group,r.dept,r.focus,r.problem,r.outcome]);
+      const csv = [header, ...rows].map(r=>r.map(x=>`"${String(x).replaceAll('"','""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'AI_Recap_Summary.csv'; a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Event wiring
+    window.addEventListener('DOMContentLoaded', () => {
+      populateDeptFilter();
+      renderCards();
+      renderTable();
+
+      el('#searchInput').addEventListener('input', e=>{state.q = e.target.value; renderCards(); renderTable();});
+      el('#deptFilter').addEventListener('change', e=>{state.dept = e.target.value; renderCards(); renderTable();});
+      els('.quick').forEach(btn=>btn.addEventListener('click', ()=>{state.q = btn.dataset.q; el('#searchInput').value = state.q; renderCards(); renderTable();}));
+      el('#btnToggleView').addEventListener('click', ()=>{
+        state.view = state.view === 'cards' ? 'table' : 'cards';
+        el('#cardView').classList.toggle('hidden');
+        el('#tableView').classList.toggle('hidden');
+      });
+      el('#btnPrint').addEventListener('click', ()=> window.print());
+      el('#btnExportCSV').addEventListener('click', exportCSV);
+
+      // Modal handlers
+      el('#modalClose').addEventListener('click', ()=>{el('#modal').classList.add('hidden'); el('#modal').classList.remove('flex');});
+      el('#modal').addEventListener('click', (e)=>{ if(e.target.id==='modal'){ el('#modalClose').click(); } });
+
+      // Delegate card actions
+      el('#cardView').addEventListener('click', (e)=>{
+        const btnOpen = e.target.closest('button[data-open]');
+        
+        if(btnCopy){ const row = DATA.find(r=>r.group===btnCopy.dataset.copy); if(row) copyRow(row); }
+      });
+    });
+  </script>
+</body>
+</html>
