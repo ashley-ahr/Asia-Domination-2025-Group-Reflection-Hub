@@ -34,7 +34,7 @@
   <header class="bg-gradient-to-r from-neutral-900 to-neutral-800 text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-        <div class="flex items-center gap-3"><img src="./asset/logo.png" alt="Ashley Asia HR" class="h-8 w-auto"/><div><h1 class="text-2xl md:text-3xl font-bold tracking-tight">Asia Domination 2025</h1><p class="opacity-90">Transforming for the Future — Group Reflection Hub</p></div></div>
+        <div class="flex items-center gap-3"><img src="./asset/logo.png" alt="Ashley Asia HR" class="h-10 w-auto"/><div><h1 class="text-2xl md:text-3xl font-bold tracking-tight">Asia Domination 2025</h1><p class="opacity-90">Transforming for the Future — Group Reflection Hub</p></div></div>
         <div class="flex items-center gap-2 flex-wrap">
           <button id="btnExportCSV" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition shadow-soft">⬇ Export CSV</button>
           <button id="btnPrint" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition shadow-soft">🖨 Print</button>
@@ -82,7 +82,7 @@
       <table class="min-w-full text-sm">
         <thead class="bg-ashley-orange text-white">
           <tr>
-			<th class="text-left px-4 py-3 min-w-[80px]">Group</th>
+			<th class="text-left px-4 py-3 min-w-[100px]">Group</th>
             <th class="text-left px-4 py-3">Functional Departments</th>
             <th class="text-left px-4 py-3">Project Focus / AI Solution</th>
             <th class="text-left px-4 py-3">Problem / Opportunity</th>
@@ -293,10 +293,11 @@
 
       // Delegate card actions
       el('#cardView').addEventListener('click', (e)=>{
-        const btnOpen = e.target.closest('button[data-open]');
-        
-        if(btnCopy){ const row = DATA.find(r=>r.group===btnCopy.dataset.copy); if(row) copyRow(row); }
-      });
+  const btnOpen = e.target.closest('button[data-open]');
+  if (btnOpen) {
+    openModal(btnOpen.dataset.open);
+  }
+});
     });
   </script>
 </body>
